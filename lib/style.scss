@@ -1,0 +1,32 @@
+$red: #e93c51;
+$blue: #347bff;
+
+.input_wrap {
+	margin-bottom: 10px;
+}
+
+.input_wrap label {
+	font-weight: normal;
+	margin-right: 10px;
+}
+
+.input {
+	font-size: 16px;
+	height: 48px;
+	margin-right: 20px;
+	padding: 0 29px;
+	background-color: #ffffff;
+  border: 1px solid #979797;
+	border-radius: 6px;
+	vertical-align: middle;
+	outline: none;
+
+	&:focus {
+		outline: none;
+		border: solid 1px $blue;
+	}
+}
+
+.invalid_input {
+	border: 1px solid $red;
+}
