@@ -5,7 +5,7 @@ function anyValue() {
 	return true;
 }
 
-export function makeValidator(spec) {
+export default function makeValidator(spec) {
 	if (!spec) return anyValue;
 	if (_.isFunction(spec)) return spec;
 	if (_.isString(spec)) {
