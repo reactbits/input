@@ -1,0 +1,35 @@
+{
+  "name": "reactbits-input",
+  "version": "0.0.1",
+  "description": "Validatable input react component",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "node devserver.js",
+    "lint": "eslint .",
+    "test": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reactbits/input.git"
+  },
+  "keywords": [
+    "react",
+    "input",
+    "validation"
+  ],
+  "author": "Sergey Todyshev <stodyshev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/reactbits/input/issues"
+  },
+  "homepage": "https://github.com/reactbits/input#readme",
+  "devDependencies": {
+    "react-devpack": "^0.1.11"
+  },
+  "dependencies": {
+    "classnames": "^2.2.3",
+    "lodash": "^4.8.1",
+    "react": "^0.14.8",
+    "validator": "^5.1.0"
+  }
+}
