@@ -12,16 +12,20 @@ export default function makeValidator(spec) {
 		switch (spec.toLowerCase()) {
 		case 'date':
 			return s => validator.isDate(s);
+		case 'password':
+			// TODO could be check of password strength
+			return anyValue;
 		case 'email':
 			return s => validator.isEmail(s);
 		case 'int':
 			return s => validator.isInt(s);
+		case 'number':
 		case 'decimal':
 			return s => validator.isDecimal(s);
 		case 'creditcard':
 			return s => validator.isCreditCard(s);
 		case 'phone':
-			return s => validator.isMobilePhone(s, 'ru-RU');
+			return s => validator.isMobilePhone(s, 'en-US');
 		case 'alpha':
 			return s => validator.isAlpha(s);
 		case 'alphanum':
@@ -40,6 +44,8 @@ export default function makeValidator(spec) {
 			return s => validator.isIP(s, 6);
 		case 'url':
 			return s => validator.isURL(s);
+		case 'text':
+			return anyValue;
 		default:
 			break;
 		}
@@ -51,7 +57,7 @@ export default function makeValidator(spec) {
 		case 'int':
 			return s => validator.isInt(s, spec);
 		case 'phone':
-			return s => validator.isMobilePhone(s, spec.locale || 'ru-RU');
+			return s => validator.isMobilePhone(s, spec.locale || 'en-US');
 		case 'length':
 			return s => validator.isLength(s, spec);
 		default:

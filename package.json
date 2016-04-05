@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/reactbits/input#readme",
   "devDependencies": {
+    "react-bootstrap": "^0.28.5",
     "react-devpack": "^0.1.13"
   },
   "dependencies": {

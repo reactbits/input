@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import makeValidator from './validate';
 import styles from './style';
@@ -9,9 +9,13 @@ function inputType(spec) {
 	if (_.isString(spec)) {
 		switch (spec.toLowerCase()) {
 		case 'date':
-			return 'data';
+			return 'date';
 		case 'email':
 			return 'email';
+		case 'password':
+			return 'password';
+		case 'number':
+			return 'number';
 		default:
 			return 'text';
 		}
@@ -19,7 +23,31 @@ function inputType(spec) {
 	return 'text';
 }
 
+// TODO pattern validation
+// TODO min, max, range constraints
+// TODO minLength, maxLength constraints
+// TODO render error hint
+
 export default class Input extends Component {
+	static propTypes = {
+		value: PropTypes.any,
+		type: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+		label: PropTypes.string,
+		className: PropTypes.string,
+		style: PropTypes.object,
+		placeholder: PropTypes.string,
+		required: PropTypes.bool,
+		onChange: PropTypes.func,
+	};
+
+	static defaultProps = {
+		onChange: _.noop,
+	};
+
+	static contextTypes = {
+		form: PropTypes.object,
+	};
+
 	constructor(props) {
 		super(props);
 
@@ -33,15 +61,29 @@ export default class Input extends Component {
 
 	componentDidMount() {
 		const isValid = this.validate(this.props.value);
-		if (!isValid) {
-			this.onChange({ target: { value: this.props.value } });
-		}
+		this.onChangeInternal(this.props.value, isValid);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.setState({
+			type: inputType(nextProps.type),
+			validate: makeValidator(nextProps.type),
+		});
 	}
 
 	onChange(e) {
 		const value = e.target.value;
 		const isValid = this.validate(value);
+		this.onChangeInternal(value, isValid);
+	}
+
+	onChangeInternal(value, isValid) {
 		this.props.onChange(value, isValid);
+
+		const form = _.get(this, 'context.form');
+		if (_.isObject(form) && _.isFunction(form.onInputChange)) {
+			form.onInputChange(this.props.name, value, isValid);
+		}
 	}
 
 	validate(value) {
@@ -57,22 +99,24 @@ export default class Input extends Component {
 
 		const klass = {
 			[styles.input]: true,
-			[props.className]: true,
 		};
-		if (!props.hiddenInvalidState && !isValid) {
+
+		const form = _.get(this, 'context.form');
+		const hiddenInvalidState = props.hiddenInvalidState
+			|| (_.isObject(form) && form.hiddenInvalidState);
+		if (!hiddenInvalidState && !isValid) {
 			klass[styles.invalid_input] = true;
 		}
 
 		const inputProps = {
 			type: this.state.type || 'text',
-			className: classNames(klass),
+			className: classNames(props.className, klass),
 			placeholder: props.placeholder,
 			value: props.value,
 			required: !!props.required,
 			onChange: this.onChange,
+			style: this.props.style || {},
 		};
-
-		// TODO render error hint
 
 		return (
 			<div className={classNames(styles.input_wrap, props.wrapClass)}>
