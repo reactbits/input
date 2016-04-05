@@ -23,6 +23,7 @@ export default class Form extends Component {
 
 		this.onInputChange = this.onInputChange.bind(this);
 		this.isValid = this.isValid.bind(this);
+		this.getValue = this.getValue.bind(this);
 
 		this.state = {
 			data: {},
@@ -37,6 +38,7 @@ export default class Form extends Component {
 				onInputChange: this.onInputChange,
 				isValid: this.isValid,
 				hiddenInvalidState: this.state.hiddenInvalidState,
+				getValue: this.getValue,
 			},
 		};
 	}
@@ -52,6 +54,10 @@ export default class Form extends Component {
 			validationState,
 			hiddenInvalidState: true,
 		});
+	}
+
+	getValue(name) {
+		return this.state.data[name];
 	}
 
 	isValid() {

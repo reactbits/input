@@ -27,6 +27,7 @@ function inputType(spec) {
 // TODO min, max, range constraints
 // TODO minLength, maxLength constraints
 // TODO render error hint
+// TODO boolean switch/checkbox
 
 export default class Input extends Component {
 	static propTypes = {
@@ -60,8 +61,9 @@ export default class Input extends Component {
 	}
 
 	componentDidMount() {
-		const isValid = this.validate(this.props.value);
-		this.onChangeInternal(this.props.value, isValid);
+		const value = this.getValue(this.props);
+		const isValid = this.validate(value);
+		this.onChangeInternal(value, isValid);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -69,6 +71,10 @@ export default class Input extends Component {
 			type: inputType(nextProps.type),
 			validate: makeValidator(nextProps.type),
 		});
+
+		const value = this.getValue(this.props);
+		const isValid = this.validate(value);
+		this.onChangeInternal(value, isValid);
 	}
 
 	onChange(e) {
@@ -80,10 +86,24 @@ export default class Input extends Component {
 	onChangeInternal(value, isValid) {
 		this.props.onChange(value, isValid);
 
-		const form = _.get(this, 'context.form');
+		const form = this.myForm();
 		if (_.isObject(form) && _.isFunction(form.onInputChange)) {
 			form.onInputChange(this.props.name, value, isValid);
 		}
+	}
+
+	getValue(props) {
+		if (props.value === undefined || props.value === null) {
+			const form = this.myForm();
+			return _.isObject(form) && _.isFunction(form.getValue)
+				? form.getValue(props.name)
+				: '';
+		}
+		return props.value;
+	}
+
+	myForm() {
+		return this.context ? this.context.form : null;
 	}
 
 	validate(value) {
@@ -95,13 +115,14 @@ export default class Input extends Component {
 
 	render() {
 		const props = this.props;
-		const isValid = this.validate(props.value);
+		const value = this.getValue(props);
+		const isValid = this.validate(value);
 
 		const klass = {
 			[styles.input]: true,
 		};
 
-		const form = _.get(this, 'context.form');
+		const form = this.myForm();
 		const hiddenInvalidState = props.hiddenInvalidState
 			|| (_.isObject(form) && form.hiddenInvalidState);
 		if (!hiddenInvalidState && !isValid) {
