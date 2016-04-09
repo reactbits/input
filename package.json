@@ -25,13 +25,13 @@
   "homepage": "https://github.com/reactbits/input#readme",
   "devDependencies": {
     "react-bootstrap": "^0.28.5",
-    "react-devpack": "^0.1.13",
-    "react-dom": "^15.0.0"
+    "react-devpack": "^0.1.15",
+    "react-dom": "^15.0.1"
   },
   "dependencies": {
     "classnames": "^2.2.3",
-    "lodash": "^4.8.2",
-    "react": "^15.0.0",
+    "lodash": "^4.9.0",
+    "react": "^15.0.1",
     "validator": "^5.2.0"
   }
 }
