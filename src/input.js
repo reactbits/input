@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import classNames from 'classnames';
+import { Input } from 'react-bootstrap';
 import makeValidator from './validate';
-import styles from './style';
 import _ from 'lodash';
 
 function inputType(spec) {
@@ -13,9 +12,14 @@ function inputType(spec) {
 		case 'email':
 			return 'email';
 		case 'password':
+		case 'confirm-password':
 			return 'password';
 		case 'number':
 			return 'number';
+		case 'checkbox':
+		case 'bool':
+		case 'boolean':
+			return 'checkbox';
 		default:
 			return 'text';
 		}
@@ -26,22 +30,40 @@ function inputType(spec) {
 // TODO pattern validation
 // TODO min, max, range constraints
 // TODO minLength, maxLength constraints
-// TODO render error hint
 // TODO boolean switch/checkbox
 
-export default class Input extends Component {
+export default class FormInput extends Component {
 	static propTypes = {
-		value: PropTypes.any,
 		type: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-		label: PropTypes.string,
+		label: React.PropTypes.node,
+		help: React.PropTypes.node,
+		addonBefore: React.PropTypes.node,
+		addonAfter: React.PropTypes.node,
+		buttonBefore: React.PropTypes.node,
+		buttonAfter: React.PropTypes.node,
+		bsSize: React.PropTypes.oneOf(['small', 'medium', 'large']),
+		bsStyle: React.PropTypes.oneOf(['success', 'warning', 'error']),
+		hasFeedback: React.PropTypes.bool,
+		feedbackIcon: React.PropTypes.node,
+		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		groupClassName: React.PropTypes.string,
+		wrapperClassName: React.PropTypes.string,
+		labelClassName: React.PropTypes.string,
+		multiple: React.PropTypes.bool,
+		disabled: React.PropTypes.bool,
+		value: React.PropTypes.any,
 		className: PropTypes.string,
 		style: PropTypes.object,
 		placeholder: PropTypes.string,
 		required: PropTypes.bool,
 		onChange: PropTypes.func,
+		showError: PropTypes.bool,
 	};
 
 	static defaultProps = {
+		disabled: false,
+		hasFeedback: false,
+		multiple: false,
 		onChange: _.noop,
 	};
 
@@ -51,13 +73,8 @@ export default class Input extends Component {
 
 	constructor(props) {
 		super(props);
-
 		this.onChange = this.onChange.bind(this);
-
-		this.state = {
-			type: inputType(props.type),
-			validate: makeValidator(props.type),
-		};
+		this.state = this.makeInitialState(props);
 	}
 
 	componentDidMount() {
@@ -67,11 +84,7 @@ export default class Input extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({
-			type: inputType(nextProps.type),
-			validate: makeValidator(nextProps.type),
-		});
-
+		this.setState(this.makeInitialState(nextProps));
 		const value = this.getValue(this.props);
 		const isValid = this.validate(value);
 		this.onChangeInternal(value, isValid);
@@ -102,6 +115,20 @@ export default class Input extends Component {
 		return props.value;
 	}
 
+	makeInitialState(props) {
+		let validate = makeValidator(props.type);
+		if (props.type === 'confirm-password') {
+			validate = v => {
+				const form = this.myForm();
+				return form ? form.getValue('password') === v : true;
+			};
+		}
+		return {
+			type: inputType(props.type),
+			validate,
+		};
+	}
+
 	myForm() {
 		return this.context ? this.context.form : null;
 	}
@@ -118,34 +145,20 @@ export default class Input extends Component {
 		const value = this.getValue(props);
 		const isValid = this.validate(value);
 
-		const klass = {
-			[styles.input]: true,
+		const inputProps = {
+			...props,
+			type: this.state.type || 'text',
+			value,
+			onChange: this.onChange,
 		};
 
 		const form = this.myForm();
-		const hiddenInvalidState = props.hiddenInvalidState
-			|| (_.isObject(form) && form.hiddenInvalidState);
-		if (!hiddenInvalidState && !isValid) {
-			klass[styles.invalid_input] = true;
+		const showError = props.showError || (_.isObject(form) && form.showError);
+		if (showError && !isValid) {
+			inputProps.bsStyle = 'error';
+			// TODO add error help
 		}
 
-		const inputProps = {
-			type: this.state.type || 'text',
-			className: classNames(props.className, klass),
-			placeholder: props.placeholder,
-			value: props.value,
-			required: !!props.required,
-			onChange: this.onChange,
-			style: this.props.style || {},
-		};
-
-		return (
-			<div className={classNames(styles.input_wrap, props.wrapClass)}>
-				<div>
-					{props.label ? <label className={props.labelClass}>{props.label}</label> : null}
-					<input {...inputProps} />
-				</div>
-			</div>
-		);
+		return <Input {...inputProps} />;
 	}
 }

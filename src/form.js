@@ -24,11 +24,12 @@ export default class Form extends Component {
 		this.onInputChange = this.onInputChange.bind(this);
 		this.isValid = this.isValid.bind(this);
 		this.getValue = this.getValue.bind(this);
+		this.submit = this.submit.bind(this);
 
 		this.state = {
 			data: {},
 			validationState: {},
-			hiddenInvalidState: true,
+			showError: false,
 		};
 	}
 
@@ -37,14 +38,18 @@ export default class Form extends Component {
 			form: {
 				onInputChange: this.onInputChange,
 				isValid: this.isValid,
-				hiddenInvalidState: this.state.hiddenInvalidState,
+				showError: this.state.showError,
 				getValue: this.getValue,
 			},
 		};
 	}
 
 	onInputChange(name, value, isValid) {
-		this.props.onChange(name, value, isValid);
+		const valueChanged = this.getValue(name) !== value;
+		const validChanged = this.state.validationState[name] !== isValid;
+		if (!valueChanged && !validChanged) {
+			return;
+		}
 
 		const data = _.assign({}, this.state.data, { [name]: value });
 		const validationState = _.assign({}, this.state.validationState, { [name]: isValid });
@@ -52,8 +57,11 @@ export default class Form extends Component {
 		this.setState({
 			data,
 			validationState,
-			hiddenInvalidState: true,
+			showError: false,
 		});
+
+		const isFormValid = _.reduce(validationState, (p, v) => p && v, true);
+		this.props.onChange(data, isFormValid);
 	}
 
 	getValue(name) {
@@ -64,26 +72,24 @@ export default class Form extends Component {
 		return _.reduce(this.state.validationState, (p, v) => p && v, true);
 	}
 
+	submit(event) {
+		if (event) event.preventDefault();
+
+		if (!this.isValid()) {
+			this.setState({ showError: true });
+			return;
+		}
+
+		this.setState({ showError: false });
+		this.props.onSubmit(this.state.data);
+	}
+
 	render() {
-		const submit = e => {
-			e.preventDefault();
-			e.stopPropagation();
-
-			if (!this.isValid()) {
-				this.setState({ hiddenInvalidState: false });
-				return;
-			}
-
-			this.setState({ hiddenInvalidState: true });
-			this.props.onSubmit(this.state.data);
-		};
-
 		const formProps = {
 			className: this.props.className,
 			style: this.props.style || {},
-			onSubmit: submit,
+			onSubmit: this.submit,
 		};
-
 		return (
 			<form {...formProps}>
 				{this.props.children}

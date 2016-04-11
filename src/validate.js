@@ -13,6 +13,7 @@ export default function makeValidator(spec) {
 		case 'date':
 			return s => validator.isDate(s);
 		case 'password':
+		case 'confirm-password':
 			// TODO could be check of password strength
 			return anyValue;
 		case 'email':
@@ -45,6 +46,10 @@ export default function makeValidator(spec) {
 		case 'url':
 			return s => validator.isURL(s);
 		case 'text':
+			return anyValue;
+		case 'checkbox':
+		case 'bool':
+		case 'boolean':
 			return anyValue;
 		default:
 			break;
