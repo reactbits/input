@@ -1,11 +1,3 @@
-import Form from './form';
-import Input from './input';
-import makeValidator from './validate';
-
-export {
-	Form,
-	Input,
-	makeValidator,
-};
-
-export default Input;
+export Form from './form';
+export Input from './input';
+export makeValidator from './validate';
