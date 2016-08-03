@@ -1,7 +1,7 @@
+import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Input } from 'react-bootstrap';
 import makeValidator from './validate';
-import _ from 'lodash';
 
 function inputType(spec) {
 	if (!spec) return 'text';

@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "node devserver.js",
-    "lint": "eslint .",
+    "lint": "eslint --ext .js,.jsx .",
     "test": "npm run lint"
   },
   "repository": {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Input } from '../src';
 import { Row, Col, Modal, Button } from 'react-bootstrap';
 import { Flex, Box } from 'reflexbox';
+import { Form, Input } from '../src';
 
 function MyForm() {
 	const inputs = {
