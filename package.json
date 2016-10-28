@@ -24,15 +24,15 @@
   },
   "homepage": "https://github.com/reactbits/input#readme",
   "devDependencies": {
-    "react-devpack": "^0.1.59",
+    "react-devpack": "^0.2.1",
     "reflexbox": "^2.2.2"
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "lodash": "^4.16.2",
+    "lodash": "^4.16.4",
     "react": "^15.3.2",
-    "react-bootstrap": "^0.30.3",
+    "react-bootstrap": "^0.30.6",
     "react-dom": "^15.3.2",
-    "validator": "^6.0.0"
+    "validator": "^6.1.0"
   }
 }
