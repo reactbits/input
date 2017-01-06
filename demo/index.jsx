@@ -31,7 +31,7 @@ function MyForm() {
     },
   };
 
-  const submit = data => {
+  const submit = (data) => {
     console.log(data);
   };
 
@@ -107,7 +107,7 @@ class Dialog extends Component {
 
 function showDialog() {
   let wrapper = null;
-  const submit = data => {
+  const submit = (data) => {
     ReactDOM.unmountComponentAtNode(wrapper);
     wrapper.remove();
     console.log(data);
