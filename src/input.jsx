@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import { Input } from 'react-bootstrap';
+import { FormControl } from 'react-bootstrap';
 import makeValidator from './validate';
 
 function inputType(spec) {
@@ -36,20 +36,9 @@ export default class FormInput extends Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     type: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    label: PropTypes.node,
-    help: PropTypes.node,
-    addonBefore: PropTypes.node,
-    addonAfter: PropTypes.node,
-    buttonBefore: PropTypes.node,
-    buttonAfter: PropTypes.node,
     bsSize: PropTypes.oneOf(['small', 'medium', 'large']),
     bsStyle: PropTypes.oneOf(['success', 'warning', 'error']),
-    hasFeedback: PropTypes.bool,
-    feedbackIcon: PropTypes.node,
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    groupClassName: PropTypes.string,
-    wrapperClassName: PropTypes.string,
-    labelClassName: PropTypes.string,
     multiple: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -62,7 +51,7 @@ export default class FormInput extends Component {
 
   static defaultProps = {
     disabled: false,
-    hasFeedback: false,
+    // hasFeedback: false,
     multiple: false,
     onChange: _.noop,
   };
@@ -118,7 +107,7 @@ export default class FormInput extends Component {
   makeInitialState(props) {
     let validate = makeValidator(props.type);
     if (props.type === 'confirm-password') {
-      validate = v => {
+      validate = (v) => {
         const form = this.myForm();
         return form ? form.getValue('password') === v : true;
       };
@@ -158,6 +147,6 @@ export default class FormInput extends Component {
       // TODO add error help
     }
 
-    return <Input {...inputProps} />;
+    return <FormControl {...inputProps} />;
   }
 }
