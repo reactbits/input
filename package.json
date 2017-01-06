@@ -1,6 +1,6 @@
 {
   "name": "reactbits-input",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Validatable input react component",
   "main": "lib/index.js",
   "scripts": {
